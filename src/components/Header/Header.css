@@ -2,12 +2,16 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
   margin-bottom: 48px;
+  box-shadow: 0px 4px 8px 0px #ffffff33;
   border-bottom: 1px solid white;
+
   background-color: #222;
   padding: 0 20px;
+
   width: 100%;
-  min-width: 1200px;
+  min-width: 323px;
   height: 72px;
 }
 
@@ -18,23 +22,4 @@ header h1 {
   font-size: 2rem;
   letter-spacing: -0.1rem;
   user-select: none;
-}
-
-header > .search-box {
-  border-radius: 4px;
-  background: #fff;
-  padding: 8px;
-}
-
-header .search-box > input {
-  border: 0;
-}
-
-header .search-box > .search-button {
-  border: 0;
-  background: url('../../statics/images/search_button.png') transparent
-    no-repeat 0 1px;
-  background-size: contain;
-  width: 14px;
-  text-indent: -1000rem;
 }

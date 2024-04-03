@@ -93,7 +93,7 @@ const openMovieDetailModal = (id: number) => {
 const MovieList = () => {
   const $section = createSection();
   const $title = document.createElement('h2');
-  const $ul: HTMLUListElement = createUl();
+  const $ul = createUl();
 
   const $skeleton = SkeletonMovieList().render();
   const $infiniteScrollTrigger = InfiniteScrollTrigger().render();
@@ -129,8 +129,8 @@ const MovieList = () => {
     if (!isLastPage) restartObserving($infiniteScrollTrigger);
   };
 
-  const onError = (res: Response) => {
-    const $errMsg = ErrorMessage().render(res.status);
+  const onError = (statusCode: HTTPStatusCode) => {
+    const $errMsg = ErrorMessage().render(statusCode);
 
     $section.appendChild($errMsg);
     $section.removeChild($skeleton);

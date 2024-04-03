@@ -1,12 +1,16 @@
 import './SearchInput.css';
 
 import SCREEN_SIZE from '../../constants/responsive';
+import SELECTORS from '../../constants/selectors';
 import SearchIcon from '../../statics/images/search_button.png';
 import MovieStore from '../../stores/movieStore';
+import useThrottle from '../../utils/throttle';
+
+const { container, input, button, searchIcon } = SELECTORS.SEARCH_INPUT;
 
 const createSearchBox = () => {
   const $searchBox = document.createElement('form');
-  $searchBox.classList.add('search-box');
+  $searchBox.classList.add(container);
   return $searchBox;
 };
 
@@ -20,18 +24,19 @@ const createSearchInput = () => {
   const $searchInput = document.createElement('input');
   $searchInput.type = 'search';
   $searchInput.placeholder = '검색';
-  $searchInput.id = 'movie-search';
-  $searchInput.name = 'movie-search';
+  $searchInput.id = input;
+  $searchInput.name = input;
 
   return $searchInput;
 };
 
 const createSearchBtn = () => {
   const $searchBtn = document.createElement('button');
-  $searchBtn.classList.add('search-button');
+  $searchBtn.classList.add(button);
   $searchBtn.type = 'submit';
 
   const $img = document.createElement('img');
+  $img.classList.add(searchIcon);
   $img.src = SearchIcon;
   $img.alt = '검색';
 
@@ -64,6 +69,8 @@ const SearchInput = () => {
   });
 
   $searchInput.addEventListener('input', (e: Event) => {
+    if (MovieStore.type === 'search') return;
+
     const { target } = e;
 
     if (target instanceof HTMLInputElement && target.value === '') {
@@ -81,22 +88,36 @@ const SearchInput = () => {
   });
 
   $searchBtn.addEventListener('click', () => {
+    const isSearchInputOpen = $searchInput.classList.contains('open');
+    if (isSearchInputOpen) return;
+
     const windowWidth = window.innerWidth;
     const isMobile = windowWidth <= SCREEN_SIZE.mobile;
 
     if (isMobile) {
-      $searchInput.classList.toggle('open');
+      $searchInput.classList.add('open');
     }
   });
 
-  window.addEventListener('resize', () => {
+  document.addEventListener('click', (event) => {
+    const target = event.target as HTMLElement;
+    const isOuterSpace = !target.closest(`.${container}`);
+
+    if (isOuterSpace) {
+      $searchInput.classList.remove('open');
+    }
+  });
+
+  const onResize = () => {
     const windowWidth = window.innerWidth;
     const isMobile = windowWidth <= SCREEN_SIZE.mobile;
     if (isMobile) return;
 
     const isSearchInputOpen = $searchInput.classList.contains('open');
     if (isSearchInputOpen) $searchInput.classList.remove('open');
-  });
+  };
+  const throttleResizing = useThrottle(onResize, 1000);
+  window.addEventListener('resize', throttleResizing);
 
   const render = () => {
     const fragment = document.createDocumentFragment();
